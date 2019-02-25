@@ -190,6 +190,8 @@
                         </AnchorPane>
                     </content>
                   </ScrollPane>
+                  <Button fx:id="btnSubTuskDown" layoutX="317.0" layoutY="19.0" mnemonicParsing="false" prefHeight="20.0" prefWidth="32.0" text="\\/" />
+                  <Button fx:id="btnSubTuskUp" layoutX="372.0" layoutY="19.0" mnemonicParsing="false" prefHeight="20.0" prefWidth="32.0" text="/\" />
                </children>
             </AnchorPane>
          </children>

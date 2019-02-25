@@ -18,6 +18,8 @@ import logics.TaskStatus;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Observable;
 import java.util.ResourceBundle;
 
@@ -105,15 +107,20 @@ public class MainViewController {
     private Label labelSubTaskStatus;
 
     @FXML
+    private Button btnSubTuskDown;
+
+    @FXML
+    private Button btnSubTuskUp;
+
+    @FXML
     private ListView<Task> lvTasks;
 
-    static ObservableList<Task> lvTasksContent = FXCollections.observableArrayList();
+    static ObservableList<Task> lvTasksContent = FXCollections.observableArrayList(Main.tasks);
 
     @FXML
     private ListView<SubTask> lvSubTask;
 
     static ObservableList<SubTask> lvSubTaskContent = FXCollections.observableArrayList();
-
 
     @FXML
     void initialize() {
@@ -131,6 +138,7 @@ public class MainViewController {
 
                 lvSubTaskContent.clear();
                 lvSubTaskContent.addAll(newValue.subTasks);
+                Main.selectedSubTask = null;
                 clearDescrSubTask();
             }
         });
@@ -138,6 +146,7 @@ public class MainViewController {
         lvSubTask.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<SubTask>() {
             @Override
             public void changed(ObservableValue<? extends SubTask> observable, SubTask oldValue, SubTask newValue) {
+                Main.selectedSubTask = newValue;
                 updateDescrSubTask(newValue);
             }
         });
@@ -185,6 +194,48 @@ public class MainViewController {
 
             newWindow.show();
         });
+        btnDeleteSubTask.setOnAction(event -> {
+            Main.selectedTask.subTasks.remove(Main.selectedSubTask);
+            lvSubTaskContent.remove(Main.selectedSubTask);
+            if(lvSubTaskContent.isEmpty()){clearDescrSubTask(); Main.selectedSubTask = null;}
+        });
+        btnDeleteTask.setOnAction(event -> {
+            Main.selectedTask.subTasks.clear();
+            lvSubTaskContent.clear();
+            clearDescrSubTask();
+            Main.tasks.remove(Main.selectedTask);
+            lvTasksContent.remove(Main.selectedTask);
+            if(lvTasksContent.isEmpty()){clearDescrTask(); Main.selectedTask = null;}
+        });
+        btnSubTuskDown.setOnAction(event -> {
+            try
+            {
+                int curSubTaskIndx = lvSubTaskContent.indexOf(Main.selectedSubTask);
+                Collections.swap(lvSubTaskContent, curSubTaskIndx, curSubTaskIndx+1);
+                Collections.swap(Main.selectedTask.subTasks, curSubTaskIndx, curSubTaskIndx+1);
+                lvSubTask.getSelectionModel().select(curSubTaskIndx+1);
+                lvSubTask.getFocusModel().focus(curSubTaskIndx+1);
+                lvSubTask.scrollTo(curSubTaskIndx+1);
+            }
+            catch (IndexOutOfBoundsException e){
+                System.out.println(e.getMessage());
+            }
+
+        });
+        btnSubTuskUp.setOnAction(event -> {
+            try{
+                int curSubTaskIndx = lvSubTaskContent.indexOf(Main.selectedSubTask);
+                Collections.swap(lvSubTaskContent, curSubTaskIndx, curSubTaskIndx-1);
+                Collections.swap(Main.selectedTask.subTasks, curSubTaskIndx, curSubTaskIndx-1);
+                lvSubTask.getSelectionModel().select(curSubTaskIndx-1);
+                lvSubTask.getFocusModel().focus(curSubTaskIndx-1);
+                lvSubTask.scrollTo(curSubTaskIndx-1);
+            }
+            catch (IndexOutOfBoundsException e){
+                System.out.println(e.getMessage());
+            }
+
+        });
     }
 
     private void updateDescrPanel(Task task) {
@@ -200,10 +251,19 @@ public class MainViewController {
         taSubTaskDescr.setText(subTask.getDescription());
         labelSubTaskStatus.setText(subTask.getTaskStatus() == TaskStatus.Complete? "выполнено":"не выполнено");
     }
+
     private void clearDescrSubTask()
     {
         tfSubTaskTitle.setText("");
         taSubTaskDescr.setText("");
         labelSubTaskStatus.setText("");
+    }
+
+    private void clearDescrTask() {
+        tfDescrTitle.setText("");
+        taDescrDescr.setText("");
+        dpDescrDeadline.setValue(null);
+        tfDescrTags.setText("");
+        labelTaskStatus.setText("");
     }
 }

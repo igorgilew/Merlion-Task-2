@@ -1,8 +1,9 @@
 package logics;
 
+import java.io.Serializable;
 import java.util.UUID;
 
-abstract class SuperTask {
+abstract class SuperTask implements Serializable {
     protected String uuid;
     protected String title;
     protected String description;
