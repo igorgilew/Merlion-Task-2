@@ -126,6 +126,9 @@ public class MainViewController {
 
     @FXML
     void initialize() {
+        dpDescrDeadline.setEditable(false);
+        dpDescrDeadline.setOnMouseClicked(e -> dpDescrDeadline.hide());
+
         lvTasks.setItems(lvTasksContent);
         lvTasks.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
 
@@ -222,7 +225,6 @@ public class MainViewController {
             catch (IndexOutOfBoundsException e){
                 System.out.println(e.getMessage());
             }
-
         });
         btnSubTuskUp.setOnAction(event -> {
             try{
@@ -240,7 +242,6 @@ public class MainViewController {
         });
 
         btnAlterTask.setOnAction(event -> {
-
             Parent root = null;
             try {
                 root = FXMLLoader.load(getClass().getResource("/sample/viewsFXMLs/updateTaskView.fxml"));
@@ -264,9 +265,37 @@ public class MainViewController {
                 lvTasks.getSelectionModel().select(Main.selectedTask);
             });
         });
+        btnUpdatesubTask.setOnAction(event -> {
+
+            Parent root = null;
+            try {
+                root = FXMLLoader.load(getClass().getResource("/sample/viewsFXMLs/updateSubTask.fxml"));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            Scene secondScene = new Scene(root, 660, 560);
+
+            // New window (Stage)
+            Stage newWindow = new Stage();
+            newWindow.setTitle("Update SubTask");
+            newWindow.setScene(secondScene);
+            newWindow.initOwner(primaryStage);
+
+            // Set position of second window, related to primary window.
+            newWindow.setX(primaryStage.getX() + 200);
+            newWindow.setY(primaryStage.getY() + 100);
+            newWindow.show();
+            newWindow.setOnHidden(event1 -> {
+                updateDescrSubTask(Main.selectedSubTask);
+                SubTask old = Main.selectedSubTask;
+                lvSubTaskContent.clear();
+                lvSubTaskContent.addAll(Main.selectedTask.subTasks);
+                lvSubTask.getSelectionModel().select(old);
+            });
+        });
     }
 
-    public void updateDescrPanel(Task task) {
+    private void updateDescrPanel(Task task) {
         tfDescrTitle.setText(task.getTitle());
         taDescrDescr.setText(task.getDescription());
         dpDescrDeadline.setValue(task.getDeadline());

@@ -54,8 +54,6 @@ public class UpdateTaskViewController {
         if(Main.selectedTask.getTaskStatus() == TaskStatus.Complete)cbTaskStatus.getSelectionModel().select("Выполнена");
         else cbTaskStatus.getSelectionModel().select("Не выполнена");
         btnTaskUpdate.setOnAction(event -> {
-            //Main.tasks.remove(Main.selectedTask);
-            //изменять лист вью
             Task oldTask = Main.selectedTask;
             Main.selectedTask.setTitle(taTaskTitle.getText());
             Main.selectedTask.setDescription(tfTaskDescription.getText());
