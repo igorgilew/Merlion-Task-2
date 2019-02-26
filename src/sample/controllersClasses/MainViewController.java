@@ -23,6 +23,8 @@ import java.util.Collections;
 import java.util.Observable;
 import java.util.ResourceBundle;
 
+import static sample.controllersClasses.Main.primaryStage;
+
 public class MainViewController {
 
     @FXML
@@ -151,7 +153,7 @@ public class MainViewController {
             }
         });
 
-        lvTasks.getSelectionModel().selectIndices(1);
+
 
         btnCreateTask.setOnAction(event -> {
 
@@ -169,8 +171,8 @@ public class MainViewController {
             newWindow.setScene(secondScene);
 
             // Set position of second window, related to primary window.
-            newWindow.setX(Main.primaryStage.getX() + 200);
-            newWindow.setY(Main.primaryStage.getY() + 100);
+            newWindow.setX(primaryStage.getX() + 200);
+            newWindow.setY(primaryStage.getY() + 100);
 
             newWindow.show();
         });
@@ -189,8 +191,8 @@ public class MainViewController {
             newWindow.setScene(secondScene);
 
             // Set position of second window, related to primary window.
-            newWindow.setX(Main.primaryStage.getX() + 200);
-            newWindow.setY(Main.primaryStage.getY() + 100);
+            newWindow.setX(primaryStage.getX() + 200);
+            newWindow.setY(primaryStage.getY() + 100);
 
             newWindow.show();
         });
@@ -236,9 +238,35 @@ public class MainViewController {
             }
 
         });
+
+        btnAlterTask.setOnAction(event -> {
+
+            Parent root = null;
+            try {
+                root = FXMLLoader.load(getClass().getResource("/sample/viewsFXMLs/updateTaskView.fxml"));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            Scene secondScene = new Scene(root, 660, 560);
+
+            // New window (Stage)
+            Stage newWindow = new Stage();
+            newWindow.setTitle("Update Task");
+            newWindow.setScene(secondScene);
+            newWindow.initOwner(primaryStage);
+
+            // Set position of second window, related to primary window.
+            newWindow.setX(primaryStage.getX() + 200);
+            newWindow.setY(primaryStage.getY() + 100);
+            newWindow.show();
+            newWindow.setOnHidden(event1 -> {
+                updateDescrPanel(Main.selectedTask);
+                lvTasks.getSelectionModel().select(Main.selectedTask);
+            });
+        });
     }
 
-    private void updateDescrPanel(Task task) {
+    public void updateDescrPanel(Task task) {
         tfDescrTitle.setText(task.getTitle());
         taDescrDescr.setText(task.getDescription());
         dpDescrDeadline.setValue(task.getDeadline());

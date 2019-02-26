@@ -16,6 +16,14 @@ public class Task extends  SuperTask{
         return tags;
     }
 
+    public void setDeadline(LocalDate deadline) {
+        this.deadline = deadline;
+    }
+
+    public void setTags(String tags) {
+        this.tags = tags;
+    }
+
     public List<SubTask> subTasks = new ArrayList<>();
 
 
