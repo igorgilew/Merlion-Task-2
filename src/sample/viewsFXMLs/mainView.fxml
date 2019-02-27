@@ -1,12 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
 <?import javafx.scene.control.DatePicker?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.RadioButton?>
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.TextArea?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.ToggleGroup?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
@@ -40,6 +43,65 @@
                         <Font name="Arial" size="22.0" />
                      </font>
                   </Label>
+                  <CheckBox fx:id="cbTitleSort" layoutX="30.0" layoutY="56.0" mnemonicParsing="false" prefHeight="43.0" prefWidth="204.0" text="Сортировать по названию, по возрастанию" wrapText="true">
+                     <font>
+                        <Font name="Arial" size="14.0" />
+                     </font>
+                  </CheckBox>
+                  <RadioButton fx:id="rbComplited" layoutX="30.0" layoutY="107.0" mnemonicParsing="false" text="Завершенные задачи" wrapText="true">
+                     <font>
+                        <Font size="14.0" />
+                     </font>
+                     <toggleGroup>
+                        <ToggleGroup fx:id="toggleGroup2" />
+                     </toggleGroup>
+                  </RadioButton>
+                  <RadioButton fx:id="rbNotComplited" layoutX="30.0" layoutY="141.0" mnemonicParsing="false" text="Незавершенные задачи" toggleGroup="$toggleGroup2" wrapText="true">
+                     <font>
+                        <Font name="Arial" size="14.0" />
+                     </font>
+                  </RadioButton>
+                  <ScrollPane fx:id="scrollSort" layoutY="168.0" prefHeight="103.0" prefWidth="317.0">
+                     <content>
+                      <AnchorPane fx:id="scrollAnchor" minHeight="0.0" minWidth="0.0" prefHeight="156.0" prefWidth="301.0">
+                           <children>
+                              <RadioButton fx:id="rbOverdueSort" layoutX="27.0" layoutY="14.0" mnemonicParsing="false" text="Просроченные задачи">
+                                 <font>
+                                    <Font size="14.0" />
+                                 </font>
+                                 <toggleGroup>
+                                    <ToggleGroup fx:id="toggleGroup" />
+                                 </toggleGroup>
+                              </RadioButton>
+                              <RadioButton fx:id="rbSoonSort" layoutX="27.0" layoutY="44.0" mnemonicParsing="false" prefHeight="43.0" prefWidth="231.0" text="Ближайшие задачи сортированные по сроку" toggleGroup="$toggleGroup" wrapText="true">
+                                 <font>
+                                    <Font size="14.0" />
+                                 </font>
+                              </RadioButton>
+                              <RadioButton fx:id="rbTagSort" layoutX="27.0" layoutY="93.0" mnemonicParsing="false" text="По тегу" toggleGroup="$toggleGroup">
+                                 <font>
+                                    <Font size="14.0" />
+                                 </font>
+                              </RadioButton>
+                              <TextField fx:id="tfTagForSort" layoutX="26.0" layoutY="121.0" promptText="Введите тег здесь">
+                                 <font>
+                                    <Font size="14.0" />
+                                 </font>
+                              </TextField>
+                           </children>
+                        </AnchorPane>
+                     </content>
+                  </ScrollPane>
+                  <Button fx:id="btnReset" layoutX="30.0" layoutY="288.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="74.0" text="Сброс">
+                     <font>
+                        <Font size="14.0" />
+                     </font>
+                  </Button>
+                  <Button fx:id="btnUseSort" layoutX="188.0" layoutY="288.0" mnemonicParsing="false" text="Применить">
+                     <font>
+                        <Font size="14.0" />
+                     </font>
+                  </Button>
                </children>
             </AnchorPane>
             <AnchorPane fx:id="leftCenterAnchorPane" prefHeight="200.0" prefWidth="200.0" GridPane.rowIndex="1">

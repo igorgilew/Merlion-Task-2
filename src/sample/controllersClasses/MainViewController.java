@@ -1,5 +1,11 @@
 package sample.controllersClasses;
 
+import java.io.IOException;
+import java.net.URL;
+import java.time.LocalDate;
+import java.util.*;
+import java.util.stream.Collectors;
+
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -12,18 +18,7 @@ import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
-import logics.SubTask;
-import logics.Task;
-import logics.TaskStatus;
-
-import java.io.IOException;
-import java.net.URL;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Observable;
-import java.util.ResourceBundle;
-
-import static sample.controllersClasses.Main.primaryStage;
+import logics.*;
 
 public class MainViewController {
 
@@ -41,6 +36,45 @@ public class MainViewController {
 
     @FXML
     private AnchorPane leftBottomAnchorPane;
+
+    @FXML
+    private CheckBox cbTitleSort;
+
+    @FXML
+    private RadioButton rbComplited;
+
+    @FXML
+    private ToggleGroup toggleGroup2;
+
+    @FXML
+    private RadioButton rbNotComplited;
+
+    @FXML
+    private ScrollPane scrollSort;
+
+    @FXML
+    private AnchorPane scrollAnchor;
+
+    @FXML
+    private RadioButton rbOverdueSort;
+
+    @FXML
+    private ToggleGroup toggleGroup;
+
+    @FXML
+    private RadioButton rbSoonSort;
+
+    @FXML
+    private RadioButton rbTagSort;
+
+    @FXML
+    private TextField tfTagForSort;
+
+    @FXML
+    private Button btnReset;
+
+    @FXML
+    private Button btnUseSort;
 
     @FXML
     private AnchorPane leftCenterAnchorPane;
@@ -97,7 +131,19 @@ public class MainViewController {
     private AnchorPane rightBottomAnchorPane;
 
     @FXML
+    private ListView<SubTask> lvSubTask;
+
+    @FXML
+    private Button btnSubTuskDown;
+
+    @FXML
+    private Button btnSubTuskUp;
+
+    @FXML
     private AnchorPane centerAnchorPane;
+
+    @FXML
+    private ListView<Task> lvTasks;
 
     @FXML
     private TextField tfSubTaskTitle;
@@ -108,24 +154,14 @@ public class MainViewController {
     @FXML
     private Label labelSubTaskStatus;
 
-    @FXML
-    private Button btnSubTuskDown;
-
-    @FXML
-    private Button btnSubTuskUp;
-
-    @FXML
-    private ListView<Task> lvTasks;
-
     static ObservableList<Task> lvTasksContent = FXCollections.observableArrayList(Main.tasks);
-
-    @FXML
-    private ListView<SubTask> lvSubTask;
+    
 
     static ObservableList<SubTask> lvSubTaskContent = FXCollections.observableArrayList();
 
     @FXML
     void initialize() {
+        scrollSort.setVisible(false);
         dpDescrDeadline.setEditable(false);
         dpDescrDeadline.setOnMouseClicked(e -> dpDescrDeadline.hide());
 
@@ -156,8 +192,7 @@ public class MainViewController {
             }
         });
 
-
-
+        
         btnCreateTask.setOnAction(event -> {
 
             Parent root = null;
@@ -174,8 +209,8 @@ public class MainViewController {
             newWindow.setScene(secondScene);
 
             // Set position of second window, related to primary window.
-            newWindow.setX(primaryStage.getX() + 200);
-            newWindow.setY(primaryStage.getY() + 100);
+            newWindow.setX(Main.primaryStage.getX() + 200);
+            newWindow.setY(Main.primaryStage.getY() + 100);
 
             newWindow.show();
         });
@@ -194,8 +229,8 @@ public class MainViewController {
             newWindow.setScene(secondScene);
 
             // Set position of second window, related to primary window.
-            newWindow.setX(primaryStage.getX() + 200);
-            newWindow.setY(primaryStage.getY() + 100);
+            newWindow.setX(Main.primaryStage.getX() + 200);
+            newWindow.setY(Main.primaryStage.getY() + 100);
 
             newWindow.show();
         });
@@ -254,11 +289,11 @@ public class MainViewController {
             Stage newWindow = new Stage();
             newWindow.setTitle("Update Task");
             newWindow.setScene(secondScene);
-            newWindow.initOwner(primaryStage);
+            newWindow.initOwner(Main.primaryStage);
 
             // Set position of second window, related to primary window.
-            newWindow.setX(primaryStage.getX() + 200);
-            newWindow.setY(primaryStage.getY() + 100);
+            newWindow.setX(Main.primaryStage.getX() + 200);
+            newWindow.setY(Main.primaryStage.getY() + 100);
             newWindow.show();
             newWindow.setOnHidden(event1 -> {
                 updateDescrPanel(Main.selectedTask);
@@ -279,11 +314,11 @@ public class MainViewController {
             Stage newWindow = new Stage();
             newWindow.setTitle("Update SubTask");
             newWindow.setScene(secondScene);
-            newWindow.initOwner(primaryStage);
+            newWindow.initOwner(Main.primaryStage);
 
             // Set position of second window, related to primary window.
-            newWindow.setX(primaryStage.getX() + 200);
-            newWindow.setY(primaryStage.getY() + 100);
+            newWindow.setX(Main.primaryStage.getX() + 200);
+            newWindow.setY(Main.primaryStage.getY() + 100);
             newWindow.show();
             newWindow.setOnHidden(event1 -> {
                 updateDescrSubTask(Main.selectedSubTask);
@@ -293,8 +328,162 @@ public class MainViewController {
                 lvSubTask.getSelectionModel().select(old);
             });
         });
+
+        btnUseSort.setOnAction(event->{
+            if(cbTitleSort.isSelected() && !rbComplited.isSelected() &&!rbNotComplited.isSelected()){
+                List<Task> tasksSorted = sortOnTitleGrow(Main.tasks);
+                if(tasksSorted.size()>0){
+                    lvTasks.setItems(FXCollections.observableArrayList(tasksSorted));
+                }
+            }
+            if (rbComplited.isSelected() && !cbTitleSort.isSelected()) {
+                List<Task> tasksSorted = sortOnStatus(TaskStatus.Complete);
+                if(tasksSorted.size()>0){
+                    lvTasks.setItems(FXCollections.observableArrayList(tasksSorted));
+                }
+                else{
+                    showAlert();
+                }
+            }
+            if(cbTitleSort.isSelected() && rbComplited.isSelected()){
+                List<Task> tasksSorted = sortOnStatus(TaskStatus.Complete);
+                tasksSorted = sortOnTitleGrow(tasksSorted);
+                if(tasksSorted.size()>0){
+                    lvTasks.setItems(FXCollections.observableArrayList(tasksSorted));
+                }
+                else
+                {
+                    showAlert();
+                }
+            }
+            if(rbNotComplited.isSelected()  && !rbOverdueSort.isSelected() && !rbSoonSort.isSelected() && !rbTagSort.isSelected()){
+                List<Task> tasksSorted = sortOnStatus(TaskStatus.InProgress);
+                if(cbTitleSort.isSelected())
+                    tasksSorted = sortOnTitleGrow(tasksSorted);
+                if(tasksSorted.size()>0){
+                    lvTasks.setItems(FXCollections.observableArrayList(tasksSorted));
+                }
+                else{
+                    showAlert();
+                }
+            }
+
+            if (rbNotComplited.isSelected() && rbOverdueSort.isSelected()) {
+                List<Task> tasksSorted = sortOnOverdue();
+                if(cbTitleSort.isSelected())
+                    tasksSorted = sortOnTitleGrow(tasksSorted);
+
+                if(tasksSorted.size()>0){
+                    lvTasks.setItems(FXCollections.observableArrayList(tasksSorted));
+                }
+                else
+                {
+                    showAlert();
+                }
+            }
+            if (rbNotComplited.isSelected() && rbSoonSort.isSelected()) {
+                List<Task> tasksSorted = sortOnSoon();
+                if(cbTitleSort.isSelected()) {
+                    tasksSorted = sortOnDeadlineAndTitle(tasksSorted);
+                }
+                else{
+                    tasksSorted = sortOnDeadlineOnly(tasksSorted);
+                }
+
+                if(tasksSorted.size()>0){
+                    lvTasks.setItems(FXCollections.observableArrayList(tasksSorted));
+                }
+                else
+                {
+                    showAlert();
+                }
+            }
+            if (rbNotComplited.isSelected() && rbTagSort.isSelected()) {
+
+                List<Task> tasksSorted = sortOnTag();
+                if(cbTitleSort.isSelected()) {
+                    tasksSorted = sortOnTitleGrow(tasksSorted);
+                }
+
+                if(tasksSorted.size()>0){
+                    lvTasks.setItems(FXCollections.observableArrayList(tasksSorted));
+                }
+                else
+                {
+                    showAlert();
+                }
+            }
+        });
+        btnReset.setOnAction(event -> {
+            lvTasks.setItems(lvTasksContent);
+        });
+        rbNotComplited.setOnAction(event -> {
+             scrollSort.setVisible(true);
+        });
+        rbComplited.setOnAction(event -> {
+            scrollSort.setVisible(false);
+        });
     }
 
+    private List<Task> sortOnTitleGrow(List<Task> tasks) {
+        List<Task> tasksSorted = new ArrayList<>(tasks);
+        Comparator<Task> taskComparator = new TaskTitleComparator();
+        tasksSorted.sort(taskComparator);
+        return  tasksSorted;
+    }
+    private List<Task> sortOnStatus(TaskStatus status){
+        List<Task> tasksFiltered = Main.tasks;
+        return tasksFiltered.stream().filter(x->x.getTaskStatus() == status)
+                .collect(Collectors.toList());
+    }
+    private List<Task> sortOnOverdue(){
+        List<Task> tasksFiltered = Main.tasks;
+        return tasksFiltered.stream().filter(x->(x.getDeadline().isBefore(LocalDate.now())) && x.getTaskStatus() == TaskStatus.InProgress)
+                .collect(Collectors.toList());
+    }
+
+    private List<Task> sortOnSoon() {
+        List<Task> tasksFiltered = Main.tasks;
+        return tasksFiltered.stream().filter(x->(x.getDeadline().isBefore(LocalDate.now().plusWeeks(1))) && x.getDeadline().isAfter(LocalDate.now()))
+                .collect(Collectors.toList());
+    }
+
+    private List<Task> sortOnDeadlineAndTitle(List<Task> tasksSorted) {
+        Comparator<Task> taskComparator = new TaskDeadlineComparator().thenComparing(new TaskTitleComparator());
+        tasksSorted.sort(taskComparator);
+        return tasksSorted;
+    }
+    private List<Task> sortOnDeadlineOnly(List<Task> tasksSorted) {
+        Comparator<Task> taskComparator = new TaskDeadlineComparator();
+        tasksSorted.sort(taskComparator);
+        return tasksSorted;
+    }
+
+    private List<Task> sortOnTag() {
+        List<Task> tasksFiltered = Main.tasks;
+        String toCompare;
+//        if(tfTagForSort.getText().equals("")) return tasksFiltered.stream().filter(x->x.getTags().equals(tfTagForSort.getText()))
+//                .collect(Collectors.toList());
+//        else {
+//
+//            return tasksFiltered.stream().filter(x->x.getTags().equals(tfTagForSort.getText()))
+//                    .collect(Collectors.toList());
+//        }
+        return tasksFiltered.stream().filter(x->x.getTags().equals(tfTagForSort.getText()))
+                .collect(Collectors.toList());
+
+
+
+    }
+
+    private void showAlert() {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Сортировка");
+        alert.setHeaderText("Результат: нет элементов удовлетворяющих выбранным критериям");
+//        alert.setContentText("Нет элементов удовлетворяющих выбранным критериям");
+
+        alert.showAndWait();
+    }
     private void updateDescrPanel(Task task) {
         tfDescrTitle.setText(task.getTitle());
         taDescrDescr.setText(task.getDescription());
