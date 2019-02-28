@@ -1,6 +1,7 @@
 package sample.controllersClasses;
 
 import java.net.URL;
+import java.time.LocalDate;
 import java.util.ResourceBundle;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
@@ -36,8 +37,8 @@ public class CreateTaskViewController {
 
     @FXML
     void initialize() {
+        dpTaskDeadline.setValue(LocalDate.now());
         btnTaskCreate.setOnAction(event->{
-
             Task task = createTask();
             Main.tasks.add(task);
             MainViewController.lvTasksContent.add(task);

@@ -369,17 +369,23 @@ public class MainViewController {
             }
 
             if (rbNotComplited.isSelected() && rbOverdueSort.isSelected()) {
-                List<Task> tasksSorted = sortOnOverdue();
-                if(cbTitleSort.isSelected())
-                    tasksSorted = sortOnTitleGrow(tasksSorted);
+                try{
+                    List<Task> tasksSorted = sortOnOverdue();
+                    if(cbTitleSort.isSelected())
+                        tasksSorted = sortOnTitleGrow(tasksSorted);
 
-                if(tasksSorted.size()>0){
-                    lvTasks.setItems(FXCollections.observableArrayList(tasksSorted));
-                }
-                else
+                    if(tasksSorted.size()>0){
+                        lvTasks.setItems(FXCollections.observableArrayList(tasksSorted));
+                    }
+                    else
+                    {
+                        showAlert();
+                    }
+                }catch (Exception e)
                 {
-                    showAlert();
+                    System.out.println(e.getMessage());
                 }
+
             }
             if (rbNotComplited.isSelected() && rbSoonSort.isSelected()) {
                 List<Task> tasksSorted = sortOnSoon();
@@ -432,18 +438,21 @@ public class MainViewController {
         return  tasksSorted;
     }
     private List<Task> sortOnStatus(TaskStatus status){
-        List<Task> tasksFiltered = Main.tasks;
+        List<Task> tasksFiltered = new ArrayList<>(Main.tasks);
         return tasksFiltered.stream().filter(x->x.getTaskStatus() == status)
                 .collect(Collectors.toList());
     }
     private List<Task> sortOnOverdue(){
-        List<Task> tasksFiltered = Main.tasks;
-        return tasksFiltered.stream().filter(x->(x.getDeadline().isBefore(LocalDate.now())) && x.getTaskStatus() == TaskStatus.InProgress)
-                .collect(Collectors.toList());
+
+        List<Task> tasksFiltered = sortOnStatus(TaskStatus.InProgress);
+        tasksFiltered= tasksFiltered.stream().filter(x->x.getDeadline().isBefore(LocalDate.now())).collect(Collectors.toList());
+//        tasksFiltered = tasksFiltered.stream().filter(x->x.getDeadline().isBefore(LocalDate.now())).collect(Collectors.toList());
+//        tasksFiltered.forEach(System.out::println);
+        return tasksFiltered;
     }
 
     private List<Task> sortOnSoon() {
-        List<Task> tasksFiltered = Main.tasks;
+        List<Task> tasksFiltered = sortOnStatus(TaskStatus.InProgress);
         return tasksFiltered.stream().filter(x->(x.getDeadline().isBefore(LocalDate.now().plusWeeks(1))) && x.getDeadline().isAfter(LocalDate.now()))
                 .collect(Collectors.toList());
     }
@@ -460,7 +469,7 @@ public class MainViewController {
     }
 
     private List<Task> sortOnTag() {
-        List<Task> tasksFiltered = Main.tasks;
+        List<Task> tasksFiltered = sortOnStatus(TaskStatus.InProgress);
         String toCompare;
 //        if(tfTagForSort.getText().equals("")) return tasksFiltered.stream().filter(x->x.getTags().equals(tfTagForSort.getText()))
 //                .collect(Collectors.toList());
