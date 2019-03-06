@@ -486,9 +486,11 @@ public class MainViewController {
 //            return tasksFiltered.stream().filter(x->x.getTags().equals(tfTagForSort.getText()))
 //                    .collect(Collectors.toList());
 //        }
-        return tasksFiltered.stream().filter(x->x.getTags().equals(tfTagForSort.getText()))
-                .collect(Collectors.toList());
 
+//        return tasksFiltered.stream().filter(x->x.getTags().equals(tfTagForSort.getText()))
+//                .collect(Collectors.toList());
+        return tasksFiltered.stream().filter(x->x.getSplittedTags().contains(tfTagForSort.getText()))
+                .collect(Collectors.toList());
 
 
     }

@@ -1,14 +1,19 @@
 package sample.controllersClasses;
 
+import java.awt.event.KeyEvent;
 import java.net.URL;
 import java.time.LocalDate;
 import java.util.ResourceBundle;
+
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+
+import javafx.scene.input.KeyCode;
 import logics.Task;
 
 public class CreateTaskViewController {
@@ -35,6 +40,7 @@ public class CreateTaskViewController {
     private Button btnTaskCreate;
 
 
+
     @FXML
     void initialize() {
         dpTaskDeadline.setValue(LocalDate.now());
@@ -44,6 +50,7 @@ public class CreateTaskViewController {
             MainViewController.lvTasksContent.add(task);
             ((Node)(event.getSource())).getScene().getWindow().hide();
         });
+
     }
     private Task createTask()
     {
