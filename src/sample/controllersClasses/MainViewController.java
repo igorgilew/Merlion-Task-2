@@ -194,7 +194,7 @@ public class MainViewController {
 
         
         btnCreateTask.setOnAction(event -> {
-
+            lvTasks.setItems(lvTasksContent);
             Parent root = null;
             try {
                 root = FXMLLoader.load(getClass().getResource("/sample/viewsFXMLs/createTaskView.fxml"));
@@ -215,6 +215,7 @@ public class MainViewController {
             newWindow.show();
         });
         btnAddSubTask.setOnAction(event -> {
+
             Parent root = null;
             try {
                 root = FXMLLoader.load(getClass().getResource("/sample/viewsFXMLs/createSubTaskView.fxml"));
@@ -296,7 +297,14 @@ public class MainViewController {
             newWindow.setY(Main.primaryStage.getY() + 100);
             newWindow.show();
             newWindow.setOnHidden(event1 -> {
+                if(Main.selectedTask != null && Main.selectedTask.getTaskStatus() == TaskStatus.Complete){
+                    Main.selectedTask.subTasks.forEach(x->x.setTaskStatus(TaskStatus.Complete));
+                }
                 updateDescrPanel(Main.selectedTask);
+                clearDescrSubTask();
+                if(Main.selectedSubTask != null){
+                    updateDescrSubTask(Main.selectedSubTask);
+                }
                 lvTasks.getSelectionModel().select(Main.selectedTask);
             });
         });
