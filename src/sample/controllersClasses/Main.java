@@ -1,19 +1,19 @@
 package sample.controllersClasses;
 
 import javafx.application.Application;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
-import javafx.stage.Stage;
-import logics.SubTask;
-import logics.Task;
+        import javafx.fxml.FXMLLoader;
+        import javafx.scene.Parent;
+        import javafx.scene.Scene;
+        import javafx.stage.Stage;
+        import logics.SubTask;
+        import logics.Task;
 
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.util.ArrayList;
-import java.util.List;
+        import java.io.FileInputStream;
+        import java.io.FileOutputStream;
+        import java.io.ObjectInputStream;
+        import java.io.ObjectOutputStream;
+        import java.util.ArrayList;
+        import java.util.List;
 
 public class Main extends Application {
 

@@ -10,10 +10,9 @@ import java.util.stream.Collectors;
 public class Task extends  SuperTask{
     private LocalDate deadline;
     private String tags;
-    private List<String> splittedTags;
 
     public List<String> getSplittedTags() {
-        return splittedTags;
+        return Arrays.stream(tags.split(" ")).collect(Collectors.toList());
     }
 
     public LocalDate getDeadline() {
@@ -38,7 +37,6 @@ public class Task extends  SuperTask{
         super(title, description);
         this.deadline = deadline;
         this.tags = tags;
-        splittedTags = Arrays.stream(tags.split(" ")).collect(Collectors.toList());
     }
 
 
